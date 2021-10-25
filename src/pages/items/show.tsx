@@ -1,26 +1,33 @@
-import { PageRouteProps } from '@constants';
+import { PageRouteProps, Item } from '@constants';
+import { API_URL, getItem } from '@api';
 import { Navbar, Page, Swiper, SwiperSlide } from 'framework7-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
-  const onClickBack = () => {
-    f7router.back();
-  };
+  const [item, setItem] = useState<Item>();
+  const itemId = f7route.params.id;
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await getItem(itemId);
+
+      setItem(data);
+    })();
+  }, []);
+
+  console.log(item);
 
   return (
     <Page noToolbar>
-      <Navbar title="상품상세" backLink={true}></Navbar>
-
-      <h1>게시글 상세 페이지</h1>
-
-      <a href="#" onClick={onClickBack}>
-        뒤로가기
-      </a>
-
-      <Swiper pagination navigation scrollbar>
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
+      <Navbar title="상품상세" backLink />
+      <Swiper pagination scrollbar>
+        {item &&
+          item?.images?.map((image) => (
+            <SwiperSlide key={image.id}>
+              {' '}
+              <img src={API_URL + image.image_path} alt="itemImage" />
+            </SwiperSlide>
+          ))}
       </Swiper>
     </Page>
   );
