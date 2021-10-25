@@ -1,0 +1,13 @@
+{
+  "Clients": {
+    "9miunonbw2le3s6obfy2send6": {
+      "ClientId": "9miunonbw2le3s6obfy2send6",
+      "ClientName": "client",
+      "UserPoolId": "local_test",
+      "CreationDate": 1623340807843,
+      "LastModifiedDate": 1623340807843,
+      "AllowedOAuthFlowsUserPoolClient": false,
+      "RefreshTokenValidity": 30
+    }
+  }
+}

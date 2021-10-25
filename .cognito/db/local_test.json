@@ -1,0 +1,11 @@
+{
+  "Users": {
+  },
+  "Options": {
+    "Id": "local_test",
+    "UsernameAttributes": [
+      "email"
+    ],
+    "AutoConfirmed": true
+  }
+}
