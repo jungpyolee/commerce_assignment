@@ -1,10 +1,12 @@
 import { PageRouteProps, Item } from '@constants';
 import { API_URL, getItem } from '@api';
-import { BlockTitle, Button, List, ListItem, Navbar, Page, Sheet, Swiper, SwiperSlide } from 'framework7-react';
+import { BlockTitle, Button, Icon, List, ListItem, Navbar, Page, Sheet, Swiper, SwiperSlide } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 import { currency } from '@js/utils';
 const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
   const [item, setItem] = useState<Item>();
+  const [bookmarked, setBookmarked] = useState(false);
+  const [lookMore, setLookMore] = useState(false);
   const itemId = f7route.params.id;
 
   const saleRate = parseInt((((item?.list_price - item?.sale_price) / item?.list_price) * 100).toFixed(0));
@@ -37,7 +39,7 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
         {/* details */}
 
         {item && (
-          <React.Fragment>
+          <>
             <div className="">제조사</div>
             <div className="font-semibold text-xl">{item.name}</div>
             {saleRate > 0 && (
@@ -48,15 +50,30 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
             )}
             <div className="font-semibold text-xl">{currency(item.sale_price)}원</div>
             {/* description */}
-            <div className="">{item.description}</div>
-            <div className="">상품 설명어쩌고저쩌고 </div>
-          </React.Fragment>
+            <div className={lookMore ? '' : 'line-clamp-3'}>{item.description}</div>
+            <div
+              onClick={() => {
+                setLookMore(!lookMore);
+              }}
+              className="mx-auto flex justify-center items-center w-1/2 h-10 mt-2 bg-gray-200 rounded-xl"
+            >
+              <p>상세정보 {lookMore ? '접기' : '더보기'}</p>
+              <Icon className="pt-0.5" size={20} f7={lookMore ? 'chevron_up' : 'chevron_down'} />
+            </div>
+          </>
         )}
       </div>
 
       {/* footer */}
       <div className="fixed flex bg-gray-200  bg-opacity-90	bottom-0 h-12 w-full p-1">
-        <div className=" w-2/12 flex justify-center items-center">찜</div>
+        <div
+          onClick={() => {
+            setBookmarked(!bookmarked);
+          }}
+          className=" w-2/12 flex justify-center items-center"
+        >
+          <Icon className="text-gray-600" f7={bookmarked ? 'bookmark_filled' : 'bookmark'} />
+        </div>
 
         <Button
           className="bg-gray-400 w-10/12 text-white font-semibold h-full"
@@ -109,4 +126,4 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
   );
 };
 
-export default ItemShowPage;
+export default React.memo(ItemShowPage);
