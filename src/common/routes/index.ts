@@ -10,7 +10,8 @@ import PostEditPage from '@pages/posts/edit';
 import MyPage from '@pages/mypage';
 import SignUpPage from '@pages/users/registrations/new';
 import LoginPage from '@pages/users/sessions/new';
-
+import CartPage from '@pages/cart';
+import OrderPage from '@pages/order/order';
 const routes = [
   { path: '/', component: HomePage },
   { path: '/users/sign_in', component: LoginPage },
@@ -23,6 +24,9 @@ const routes = [
   { path: '/posts/new', component: PostNewPage },
   { path: '/posts/:id', component: PostShowPage },
   { path: '/posts/:id/edit', component: PostEditPage },
+  { path: '/line_items', component: CartPage },
+  { path: '/order', component: OrderPage },
+
   { path: '(.*)', component: NotFoundPage },
 ];
 
