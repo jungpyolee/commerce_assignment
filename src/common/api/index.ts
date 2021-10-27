@@ -31,15 +31,16 @@ export const userMeApi = () => API.get<CurrentUser>('/users/me');
 
 export const getItems = (params = null) => API.get<any>('/items', { params });
 export const getItem = (itemId) => API.get<any>(`/items/${itemId}`);
+
 export const getCategories = (params = null) => API.get<Category[]>('/categories', { params });
 export const getCategory = (id, params = null) => API.get<Category>(`/categories/${id}`, { params });
 
-export const getPosts =
-  () =>
-  async (params = null) => {
-    const { data } = await API.get('/posts', { params });
-    return data;
-  };
+export const getCart = (params = null) => API.get<any>('/cart', { params });
+
+export const getPosts = () => async (params = null) => {
+  const { data } = await API.get('/posts', { params });
+  return data;
+};
 export const getPost = (postId) => async () => {
   const { data } = await API.get<any>(`/posts/${postId}`);
   return data;
