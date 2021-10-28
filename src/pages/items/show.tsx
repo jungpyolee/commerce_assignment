@@ -1,17 +1,30 @@
 import { PageRouteProps, Item } from '@constants';
-import { API_URL, getItem } from '@api';
-import { BlockTitle, Button, Icon, List, ListItem, Navbar, Page, Sheet, Swiper, SwiperSlide } from 'framework7-react';
+import { addCart, API_URL, getItem } from '@api';
+import {
+  BlockTitle,
+  Button,
+  f7,
+  Icon,
+  List,
+  ListItem,
+  Navbar,
+  Page,
+  Sheet,
+  Stepper,
+  Swiper,
+  SwiperSlide,
+} from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 import { currency } from '@js/utils';
 const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
   const [item, setItem] = useState<Item>();
+  const [count, setCount] = useState(1);
   const [bookmarked, setBookmarked] = useState(false);
   const [lookMore, setLookMore] = useState(false);
   const itemId = f7route.params.id;
 
   const saleRate = parseInt((((item?.list_price - item?.sale_price) / item?.list_price) * 100).toFixed(0));
 
-  console.log(saleRate);
   useEffect(() => {
     (async () => {
       const { data } = await getItem(itemId);
@@ -22,15 +35,27 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
 
   console.log(item);
 
+  console.log(count);
+
+  const addCartHandler = (id, count) => {
+    addCart(id, count).then((res) => {
+      if (res.status === 200) {
+        f7router.navigate('/line_items');
+      } else {
+        alert('장바구니 담기 실패');
+      }
+    });
+  };
+
   return (
     <Page noToolbar>
       <Navbar title="상품상세" backLink />
-      <Swiper pagination scrollbar>
+      <Swiper className="" pagination scrollbar>
         {item &&
           item?.images?.map((image) => (
-            <SwiperSlide key={image.id}>
+            <SwiperSlide className="" key={image.id}>
               {' '}
-              <img src={API_URL + image.image_path} alt="itemImage" />
+              <img className="max-h-96" src={API_URL + image.image_path} alt="itemImage" />
             </SwiperSlide>
           ))}
       </Swiper>
@@ -75,52 +100,30 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
           <Icon className="text-gray-600" f7={bookmarked ? 'bookmark_filled' : 'bookmark'} />
         </div>
 
-        <Button
-          className="bg-gray-400 w-10/12 text-white font-semibold h-full"
-          fill
-          sheetOpen=".demo-sheet-swipe-to-step"
-        >
-          구매하기
+        <Button className=" w-10/12 text-white font-semibold h-full" fill sheetOpen=".cartModal">
+          장바구니 담기
         </Button>
       </div>
-
-      <Sheet className="demo-sheet-swipe-to-step" style={{ height: 'auto' }} swipeToClose swipeToStep backdrop>
-        <div className="sheet-modal-swipe-step">
-          <div className="display-flex padding justify-content-space-between align-items-center">
-            <div style={{ fontSize: '18px' }}>
-              <b>Total:</b>
-            </div>
-            <div style={{ fontSize: '22px' }}>
-              <b>$500</b>
-            </div>
-          </div>
-          <div className="padding-horizontal padding-bottom">
-            <Button large fill>
-              Make Payment
-            </Button>
-            <div className="margin-top text-align-center">Swipe up for more details</div>
-          </div>
+      <Sheet className="w-full cartModal border rounded-t-xl p-4" style={{ height: 'auto' }} swipeToClose backdrop>
+        <div className="flex justify-between">
+          <div className="text-lg text-center">수량을 선택해주세요</div>
+          <Stepper min={1} fill value={count} onStepperChange={setCount} />
         </div>
-        <BlockTitle medium className="margin-top">
-          Your order:
-        </BlockTitle>
-        <List noHairlines>
-          <ListItem title="Item 1">
-            <b slot="after" className="text-color-black">
-              $200
-            </b>
-          </ListItem>
-          <ListItem title="Item 2">
-            <b slot="after" className="text-color-black">
-              $180
-            </b>
-          </ListItem>
-          <ListItem title="Delivery">
-            <b slot="after" className="text-color-black">
-              $120
-            </b>
-          </ListItem>
-        </List>
+        <div className="text-xl flex justify-between my-2">
+          <p>총액</p>
+          <p>{currency(item?.sale_price * count)} 원</p>
+        </div>
+
+        <Button
+          sheetClose
+          onClick={() => {
+            addCartHandler(itemId, count);
+          }}
+          className=" w-full font-semibold h-10"
+          fill
+        >
+          장바구니에 추가
+        </Button>
       </Sheet>
     </Page>
   );
