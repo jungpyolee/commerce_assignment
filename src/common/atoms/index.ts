@@ -38,3 +38,8 @@ export const priceState = atom({
   key: 'priceAtom',
   default: initialPriceState,
 });
+
+export const badgeState = atom({
+  key: 'badgeAtom',
+  default: 0,
+});
