@@ -10,7 +10,7 @@ import PostEditPage from '@pages/posts/edit';
 import MyPage from '@pages/mypage';
 import SignUpPage from '@pages/users/registrations/new';
 import LoginPage from '@pages/users/sessions/new';
-import CartPage from '@pages/cart';
+import CartPage from '@pages/order/cart';
 import OrderPage from '@pages/order/order';
 const routes = [
   { path: '/', component: HomePage },
