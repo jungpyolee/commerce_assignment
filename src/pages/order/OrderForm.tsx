@@ -1,15 +1,16 @@
 import React, { useRef } from 'react';
 import * as Yup from 'yup';
-import { API_URL, createPost, updatePost } from '@api';
+import { updateOrder } from '@api';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { f7, List, ListInput, Button, ListItem, AccordionContent } from 'framework7-react';
-import { Order, Post } from '@constants';
+
 import { Router } from 'framework7/types';
-import { string } from 'prop-types';
+
 import { useRecoilState } from 'recoil';
 import { itemState, priceState } from '@atoms';
-import { currency } from '@js/utils';
+
 import { Price } from './price';
+import { Items } from './items';
 
 const OrderNewSchema = Yup.object().shape({
   receiver_name: Yup.string().required('필수 입력사항입니다.'),
@@ -29,7 +30,7 @@ const OrderNewSchema = Yup.object().shape({
 });
 
 interface OrderFormProps {
-  setOrder?: React.Dispatch<React.SetStateAction<Order>>;
+  orderId: number;
   f7router: Router.Router;
 }
 
@@ -41,9 +42,8 @@ interface OrderFormValue {
   address2: string;
 }
 
-const OrderForm = ({ setOrder, f7router }: OrderFormProps) => {
+const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
   const [items, setItems] = useRecoilState(itemState);
-  const [price, setPrice] = useRecoilState(priceState);
 
   const formikRef = useRef(null);
   const initialValues: OrderFormValue = {
@@ -63,12 +63,12 @@ const OrderForm = ({ setOrder, f7router }: OrderFormProps) => {
         f7.dialog.preloader('결제 요청중입니다...');
         await setSubmitting(true);
         try {
-          // 여기서 api요청
-          // const { data } = await createPost(values);
-          // if (data) {
-          //   setPosts((posts) => [...posts, data]);
-          //   f7router.back();
-          // }
+          console.log(values);
+          const { data } = await updateOrder(orderId, values);
+          if (data) {
+            console.log(data);
+            f7router.navigate('/');
+          }
         } catch (e) {
           throw new Error(e);
         } finally {
@@ -80,100 +80,80 @@ const OrderForm = ({ setOrder, f7router }: OrderFormProps) => {
     >
       {({ values, isSubmitting, handleChange, handleBlur, errors, touched, isValid }) => (
         <Form>
-          <List inlineLabels accordionList>
+          <List className="mt-4" inlineLabels accordionList>
             <ListItem accordionItem accordionItemOpened title="받는 분">
               <AccordionContent>
-                <ListInput
-                  label="이름"
-                  type="text"
-                  name="receiver_name"
-                  placeholder="이름을 입력해주세요"
-                  value={values.receiver_name}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errorMessageForce
-                  errorMessage={touched.receiver_name && errors.receiver_name}
-                />
-                <ListInput
-                  label="전화번호"
-                  type="number"
-                  name="receiver_phone"
-                  placeholder="전화번호를 입력해주세요"
-                  value={values.receiver_phone}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errorMessageForce
-                  errorMessage={touched.receiver_phone && errors.receiver_phone}
-                />
+                <List>
+                  <ListInput
+                    label="이름"
+                    type="text"
+                    name="receiver_name"
+                    placeholder="이름을 입력해주세요"
+                    value={values.receiver_name}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errorMessageForce
+                    errorMessage={touched.receiver_name && errors.receiver_name}
+                  />
+                  <ListInput
+                    label="전화번호"
+                    type="text"
+                    name="receiver_phone"
+                    placeholder="전화번호를 입력해주세요"
+                    value={values.receiver_phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errorMessageForce
+                    errorMessage={touched.receiver_phone && errors.receiver_phone}
+                  />
+                </List>
               </AccordionContent>
             </ListItem>
           </List>
-          <List inlineLabels accordionList>
+          <List className="-mt-4 mb-1" inlineLabels accordionList>
             <ListItem accordionItem accordionItemOpened title="배송지">
               <AccordionContent>
-                <ListInput
-                  label="우편번호"
-                  type="number"
-                  name="zipcode"
-                  placeholder="우편번호"
-                  value={values.zipcode}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errorMessageForce
-                  errorMessage={touched.zipcode && errors.zipcode}
-                />
-                <ListInput
-                  label="주소"
-                  type="text"
-                  name="address1"
-                  placeholder="주소를 입력해주세요"
-                  value={values.address1}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errorMessageForce
-                  errorMessage={touched.address1 && errors.address1}
-                />
-                <ListInput
-                  label="상세주소"
-                  type="text"
-                  name="address2"
-                  placeholder="상세주소를 입력해주세요"
-                  value={values.address2}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  errorMessageForce
-                  errorMessage={touched.address2 && errors.address2}
-                />
+                <List>
+                  <ListInput
+                    label="우편번호"
+                    type="text"
+                    name="zipcode"
+                    placeholder="우편번호"
+                    value={values.zipcode}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errorMessageForce
+                    errorMessage={touched.zipcode && errors.zipcode}
+                  />
+                  <ListInput
+                    label="주소"
+                    type="text"
+                    name="address1"
+                    placeholder="주소를 입력해주세요"
+                    value={values.address1}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errorMessageForce
+                    errorMessage={touched.address1 && errors.address1}
+                  />
+                  <ListInput
+                    label="상세주소"
+                    type="text"
+                    name="address2"
+                    placeholder="상세주소를 입력해주세요"
+                    value={values.address2}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    errorMessageForce
+                    errorMessage={touched.address2 && errors.address2}
+                  />
+                </List>
               </AccordionContent>
             </ListItem>
           </List>
+          <Items />
 
-          <List mediaList accordionList>
-            <ListItem
-              accordionItem
-              title="주문 상세 정보"
-              after={items ? `${items[0].name} 외 ${items?.length - 1}건` : null}
-            >
-              {items &&
-                items.map((item) => {
-                  return (
-                    <AccordionContent>
-                      <ListItem
-                        className=""
-                        title={item.name}
-                        subtitle={`수량: ${item.quantity}`}
-                        footer="hi"
-                        after={`${currency(item.sale_price * item.quantity)} 원`}
-                      >
-                        <img className="rounded-xl" slot="media" src={API_URL + item.image_path} width="80" />
-                      </ListItem>
-                    </AccordionContent>
-                  );
-                })}
-            </ListItem>
-          </List>
-
-          <List>
+          <List className="-mt-4 mb-5">
             <ListItem
               radio
               radioIcon="start"
