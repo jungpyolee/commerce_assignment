@@ -42,6 +42,23 @@ export interface Item extends DefaultProps {
   user?: User;
 }
 
+export interface Cart extends DefaultProps {
+  item_id: number;
+  order_id: number;
+  quantity: number;
+  total: number;
+}
+
+export interface Order extends DefaultProps {
+  status: string;
+  receiver_name: string;
+  receiver_phone: string;
+  zipcode: string;
+  address1: string;
+  address2: string;
+  line_items?: Cart[];
+}
+
 export interface Post extends DefaultProps {
   user_id: number;
   title: string;
