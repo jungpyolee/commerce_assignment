@@ -11,6 +11,7 @@ import { itemState, priceState } from '@atoms';
 
 import { Price } from './price';
 import { Items } from './items';
+import DaumAddressSearch from '@components/shared/DaumAddressSearch';
 
 const OrderNewSchema = Yup.object().shape({
   receiver_name: Yup.string().required('필수 입력사항입니다.'),
@@ -66,8 +67,10 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
           console.log(values);
           const { data } = await updateOrder(orderId, values);
           if (data) {
-            console.log(data);
-            f7router.navigate('/');
+            f7router.back('/', { force: true });
+            f7.dialog.confirm('주문 내역을 확인하시겠습니까?', '주문 완료', () => {
+              f7router.navigate('/history');
+            });
           }
         } catch (e) {
           throw new Error(e);
@@ -80,7 +83,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
     >
       {({ values, isSubmitting, handleChange, handleBlur, errors, touched, isValid }) => (
         <Form>
-          <List className="mt-4" inlineLabels accordionList>
+          <List noHairlines className="mt-4" inlineLabels accordionList>
             <ListItem accordionItem accordionItemOpened title="받는 분">
               <AccordionContent>
                 <List>
@@ -110,50 +113,12 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
               </AccordionContent>
             </ListItem>
           </List>
-          <List className="-mt-4 mb-1" inlineLabels accordionList>
-            <ListItem accordionItem accordionItemOpened title="배송지">
-              <AccordionContent>
-                <List>
-                  <ListInput
-                    label="우편번호"
-                    type="text"
-                    name="zipcode"
-                    placeholder="우편번호"
-                    value={values.zipcode}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errorMessageForce
-                    errorMessage={touched.zipcode && errors.zipcode}
-                  />
-                  <ListInput
-                    label="주소"
-                    type="text"
-                    name="address1"
-                    placeholder="주소를 입력해주세요"
-                    value={values.address1}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errorMessageForce
-                    errorMessage={touched.address1 && errors.address1}
-                  />
-                  <ListInput
-                    label="상세주소"
-                    type="text"
-                    name="address2"
-                    placeholder="상세주소를 입력해주세요"
-                    value={values.address2}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    errorMessageForce
-                    errorMessage={touched.address2 && errors.address2}
-                  />
-                </List>
-              </AccordionContent>
-            </ListItem>
-          </List>
-          <Items />
 
-          <List className="-mt-4 mb-5">
+          <DaumAddressSearch />
+
+          <Items f7router={f7router} />
+
+          <List noHairlines className="-mt-4 mb-5">
             <ListItem
               radio
               radioIcon="start"
