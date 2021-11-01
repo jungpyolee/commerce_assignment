@@ -17,7 +17,6 @@ export default function BestTab(props) {
             {items.map((item: Item, i) => {
               let rate = saleRate(item);
 
-              console.log(rate);
               return (
                 <React.Fragment key={item.id}>
                   <div className="sm:w-1/4 md: w-1/2 inline-flex grid-list-item relative">
