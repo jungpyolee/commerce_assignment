@@ -1,10 +1,12 @@
-import { API_URL, getCategory, getItems } from '@api';
+import { API_URL, getCart, getCategory, getItems, getItemsByCategoryId } from '@api';
+import { badgeState } from '@atoms';
 import { Item } from '@constants';
 import { currency } from '@js/utils';
 import { useFormik } from 'formik';
 import { Link, List, ListInput, ListItem, Navbar, NavRight, NavTitle, Page } from 'framework7-react';
 import { map } from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import i18n from '../../assets/lang/i18n';
 
 const SortStates = [
@@ -21,6 +23,7 @@ interface ItemFilterProps {
 
 const ItemIndexPage = ({ f7route }) => {
   const { is_main, category_id } = f7route.query;
+  const [badge, setBadge] = useRecoilState(badgeState);
   const [viewType, setViewType] = useState('grid');
   // const queryClient = useQueryClient();
   // const ITEM_KEY = ['items', category_id * 1];
@@ -41,12 +44,16 @@ const ItemIndexPage = ({ f7route }) => {
       getCategory(category_id).then((resp) => {
         setCategory(resp.data);
       });
+
+      getItemsByCategoryId(category_id).then((resp) => {
+        setItems(resp.data.items);
+      });
+    } else {
+      (async () => {
+        const { data } = await getItems();
+        setItems(data.items);
+      })();
     }
-    // async await 을 사용
-    (async () => {
-      const { data } = await getItems();
-      setItems(data.items);
-    })();
   }, []);
 
   const filterForm = useFormik<ItemFilterProps>({
@@ -78,30 +85,15 @@ const ItemIndexPage = ({ f7route }) => {
       <Navbar backLink={!is_main}>
         <NavTitle>{(category && category.title) || '쇼핑'}</NavTitle>
         <NavRight>
-          <Link href="/line_items" iconF7="cart" iconBadge={3} badgeColor="red" />
+          <Link href="/line_items" iconF7="cart" iconBadge={badge} badgeColor="red" />
         </NavRight>
       </Navbar>
 
       <form onSubmit={filterForm.handleSubmit} className="item-list-form p-3 table w-full border-b">
         <div className="float-left">
-          총 <b>{currency((items && totalCount) || 0)}</b>개 상품
+          총 <b>{currency(items?.length)}</b>개 상품
         </div>
-        <ListInput
-          type="select"
-          className="float-right inline-flex items-center px-2.5 py-3 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          name="s"
-          onChange={(e) => {
-            filterForm.handleChange(e);
-            filterForm.submitForm();
-          }}
-          value={filterForm.values.s}
-        >
-          {map(SortStates, (v, idx) => (
-            <option value={v[0]} key={idx}>
-              {v[1]}
-            </option>
-          ))}
-        </ListInput>
+
         <ListInput
           type="select"
           defaultValue="grid"
@@ -125,7 +117,7 @@ const ItemIndexPage = ({ f7route }) => {
                       key={item.id}
                       mediaItem
                       link={`/items/${item.id}`}
-                      title={`${item.id}-${item.name}`}
+                      title={`${item.name}`}
                       subtitle={`${currency(item.sale_price)}원`}
                       className="w-full"
                     >
@@ -139,7 +131,7 @@ const ItemIndexPage = ({ f7route }) => {
                       <ListItem
                         mediaItem
                         link={`/items/${item.id}`}
-                        title={`${item.id}-${item.name}`}
+                        title={`${item.name}`}
                         subtitle={`${currency(item.sale_price)}원`}
                         header={category_id ? category?.title : ''}
                         className="w-full"
