@@ -123,12 +123,11 @@ const SignUpPage: React.FC = () => {
   return (
     <Page>
       <Navbar title="회원가입" backLink sliding={false} />
-      <p className="font-semibold text-2xl text-center mt-5">insomenia</p>
+      <p className="font-semibold text-2xl text-center mt-5">GUZEGUZE</p>
       <FormikProvider value={value}>
         <form>
           <div>
             <List noHairlines className="new-form-list">
-              <h3 className="subtitle">기본 정보</h3>
               <ListInput
                 label={i18next.t('login.name') as string}
                 type="text"
