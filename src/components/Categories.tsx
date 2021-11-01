@@ -24,12 +24,12 @@ const Categories = () => {
   useEffect(() => {
     (async () => {
       const { data } = await getCategories({ q: { s: ['title asc'] } });
-      setCategories(data);
+      setCategories(data.slice(0, 6));
     })();
   }, []);
 
   return (
-    <div className="mt-2 grid grid-cols-4 gap-2 p-2">
+    <div className="mt-2 grid grid-cols-6 gap-2 p-2 border-b">
       {categories.map((category: Category, i) => (
         <div key={category.id}>
           {categories.length ? (
@@ -38,7 +38,7 @@ const Categories = () => {
               className="bg-white h-20 flex flex-col items-center justify-center"
               key={category.id}
             >
-              <img src={API_URL + category.image_path} alt="#" className="w-14 h-14 rounded-lg shadow-sm" />
+              <img src={API_URL + category.image_path} alt="#" className="w-9 h-9 rounded-lg " />
               <span className="text-gray-500 mt-1">{category.title}</span>
             </Link>
           ) : (
