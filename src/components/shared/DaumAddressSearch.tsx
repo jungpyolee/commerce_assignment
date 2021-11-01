@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { f7, List, Row, Col, ListInput } from 'framework7-react';
+import { f7, List, Row, Col, ListInput, ListItem } from 'framework7-react';
 import DaumPostcode from 'react-daum-postcode';
 import { useFormikContext } from 'formik';
 import { Address } from '@constants';
@@ -42,13 +42,11 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
   };
 
   return (
-    <List noHairlines className="address-form-list">
-      <div className="subtitle">{title}</div>
-      <ul>
+    <List accordionList noHairlines className="address-form-list mt-4">
+      <ListItem accordionItem accordionItemOpened title="배송지">
         <Row>
           <Col width="70">
             <ListInput
-              label={i18next.t('login.zipcode')}
               type="text"
               name="zipcode"
               placeholder={i18next.t('login.zipcode')}
@@ -61,11 +59,11 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
               className="pb-4"
             />
           </Col>
-          <Col width="30" className="pt-5 pr-4">
+          <Col width="30" className="">
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
-              className="button button-outline button-large text-sm p-6"
+              className="button button-outline w-16 h-8 text-sm mt-4 mr-4"
             >
               주소검색
             </button>
@@ -73,7 +71,6 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
         </Row>
         {isOpen && <DaumPostcode onComplete={handleComplete} />}
         <ListInput
-          label={i18next.t('login.address1')}
           type="text"
           name="address1"
           placeholder={i18next.t('login.address1')}
@@ -86,7 +83,6 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
           className="pb-4"
         />
         <ListInput
-          label={i18next.t('login.address2')}
           ref={() => ($address2Input.current = f7.$el.find('input[name=address2]'))}
           type="text"
           name="address2"
@@ -98,7 +94,7 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
           outline
           className="pb-4"
         />
-      </ul>
+      </ListItem>
     </List>
   );
 };
