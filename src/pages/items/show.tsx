@@ -1,5 +1,5 @@
 import { PageRouteProps, Item } from '@constants';
-import { addCart, API_URL, getItem } from '@api';
+import { addCart, API_URL, getCart, getItem } from '@api';
 import {
   BlockTitle,
   Button,
@@ -16,13 +16,18 @@ import {
 } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 import { currency } from '@js/utils';
+import { useRecoilState } from 'recoil';
+import { badgeState } from '@atoms';
 const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
+  const [badge, setBadge] = useRecoilState(badgeState);
+
   const [item, setItem] = useState<Item>();
   const [count, setCount] = useState(1);
   const [bookmarked, setBookmarked] = useState(false);
   const [lookMore, setLookMore] = useState(false);
   const itemId = f7route.params.id;
 
+  console.log(f7route.params);
   const saleRate = parseInt((((item?.list_price - item?.sale_price) / item?.list_price) * 100).toFixed(0));
 
   useEffect(() => {
@@ -32,10 +37,6 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
       setItem(data);
     })();
   }, []);
-
-  console.log(item);
-
-  console.log(count);
 
   const addCartHandler = (id, count) => {
     addCart(id, count).then((res) => {
@@ -48,14 +49,21 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
   };
 
   return (
-    <Page noToolbar>
+    <Page
+      onPageBeforeOut={() => {
+        getCart().then((res) => {
+          if (res.data.line_items) setBadge(res.data.line_items.length);
+        });
+      }}
+      noToolbar
+    >
       <Navbar title="상품상세" backLink />
       <Swiper className="" pagination scrollbar>
         {item &&
           item?.images?.map((image) => (
             <SwiperSlide className="" key={image.id}>
               {' '}
-              <img className="max-h-96" src={API_URL + image.image_path} alt="itemImage" />
+              <img className="max-h-96 w-full" src={API_URL + image.image_path} alt="itemImage" />
             </SwiperSlide>
           ))}
       </Swiper>
