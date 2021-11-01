@@ -7,6 +7,7 @@ import { useRecoilState } from 'recoil';
 import { badgeState } from '@atoms';
 import BestTab from '@components/BestTab';
 import HotDealTab from '@components/HotDealTab';
+import EventTab from '@components/EventTab';
 
 const HomePage = ({ f7route }) => {
   const [badge, setBadge] = useRecoilState(badgeState);
@@ -17,7 +18,6 @@ const HomePage = ({ f7route }) => {
     getCart().then((res) => {
       if (res.data.line_items) setBadge(res.data.line_items.length);
     });
-
     (async () => {
       const { data } = await getItems();
       setItems(data.items);
@@ -33,12 +33,13 @@ const HomePage = ({ f7route }) => {
             className="text-black "
             href="/line_items"
             iconF7="cart"
-            iconBadge={badge ? badge : null}
+            iconBadge={badge ? badge : 0}
             badgeColor="red"
           />
         </NavRight>
       </Navbar>
-      <Toolbar style={{ fontSize: 14 }} tabbar position="top">
+
+      <Toolbar style={{ fontSize: 14, backgroundColor: 'white' }} tabbar position="top">
         <Link tabLink="#tab-home" tabLinkActive>
           홈
         </Link>
@@ -46,13 +47,14 @@ const HomePage = ({ f7route }) => {
         <Link tabLink="#tab-best">베스트</Link>
         <Link tabLink="#tab-hotDeal">특가</Link>
       </Toolbar>
+
       <Tabs swipeable>
         <Tab className="overflow-auto" id="tab-home" tabActive>
           <HomeTab items={items} />
         </Tab>
 
         <Tab className="overflow-auto" id="tab-event">
-          dd
+          <EventTab />
         </Tab>
         <Tab className="overflow-auto" id="tab-best">
           <BestTab items={items} />
