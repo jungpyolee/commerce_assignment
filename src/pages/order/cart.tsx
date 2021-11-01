@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { array } from 'prop-types';
 import { currency } from '@js/utils';
 import { useRecoilState } from 'recoil';
-import { itemState, priceState } from '@atoms';
+import { badgeState, itemState, priceState } from '@atoms';
 import { Price } from './price';
 import { Items } from './items';
 
@@ -13,10 +13,11 @@ const CartPage = ({ f7route, f7router }: PageRouteProps) => {
   const [cartItems, setCartItems] = useState([]);
   const [items, setItems] = useRecoilState(itemState);
   const [price, setPrice] = useRecoilState(priceState);
+  const [badge, setBadge] = useRecoilState(badgeState);
   useEffect(() => {
     (async () => {
       const { data } = await getCart();
-      console.log(data);
+
       setCartItems(data.line_items);
 
       let array = [];
@@ -24,6 +25,7 @@ const CartPage = ({ f7route, f7router }: PageRouteProps) => {
       for (let i = 0; i < data.line_items.length; i++) {
         const result = await getItem(data.line_items[i].item_id);
         result.data.quantity = data.line_items[i].quantity;
+        result.data.ITEMID = data.line_items[i].id;
         array.push(result.data);
       }
       setItems(array);
@@ -42,33 +44,34 @@ const CartPage = ({ f7route, f7router }: PageRouteProps) => {
     })();
   }, []);
 
-  console.log('cartItems', cartItems);
   return (
-    <Page className="bg-gray-200" noToolbar>
-      <Navbar title="장바구니" backLink />
+    <Page
+      onPageBeforeOut={() => {
+        getCart().then((res) => {
+          if (res.data.line_items) setBadge(res.data.line_items.length);
+        });
+      }}
+      className="bg-gray-200"
+      noToolbar
+    >
+      <Navbar title="장바구니" backLink onBackClick={() => {}} />
 
       {cartItems.length ? (
         <div>
           {/* item */}
-          <Items />
+          <Items f7router={f7router} />
           {/* price */}
           <Price />
           {/* footer */}
           <div className="fixed flex bg-white  bg-opacity-90	bottom-0 h-12 w-full p-1">
-            <div className="w-3/12 flex justify-center items-center">
-              <p>
-                2개 <b>49,600원</b>
-              </p>
-            </div>
-
             <Button
               onClick={() => {
                 f7router.navigate('/order');
               }}
-              className="bg-gray-400 w-9/12 text-white font-semibold h-full"
+              className="bg-gray-800 w-full text-white font-semibold h-full"
               fill
             >
-              바로구매
+              총 {cartItems.length}개 &nbsp;&nbsp; {currency(price.final)}원 구매하기
             </Button>
           </div>
         </div>
@@ -78,7 +81,7 @@ const CartPage = ({ f7route, f7router }: PageRouteProps) => {
 
           <Button
             onClick={() => {
-              f7router.navigate('/');
+              f7router.back();
             }}
             className="w-60 h-14 mt-4 text-lg"
             text="상품 담으러 가기"
