@@ -33,7 +33,7 @@ const F7App = () => {
   });
 
   const f7params = {
-    name: 'Practice React',
+    name: 'GUZEGUZE',
     theme: 'ios',
     id: 'com.insomenia.practice',
     routes,
