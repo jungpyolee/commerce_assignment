@@ -14,6 +14,7 @@ const CartPage = ({ f7route, f7router }: PageRouteProps) => {
   const [items, setItems] = useRecoilState(itemState);
   const [price, setPrice] = useRecoilState(priceState);
   const [badge, setBadge] = useRecoilState(badgeState);
+
   useEffect(() => {
     (async () => {
       const { data } = await getCart();
@@ -59,7 +60,7 @@ const CartPage = ({ f7route, f7router }: PageRouteProps) => {
       {cartItems.length ? (
         <div>
           {/* item */}
-          <Items f7router={f7router} />
+          <Items f7router={f7router} isCart={true} />
           {/* price */}
           <Price />
           {/* footer */}

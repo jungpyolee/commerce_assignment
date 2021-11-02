@@ -5,7 +5,7 @@ import { currency } from '@js/utils';
 import { AccordionContent, Icon, List, ListItem, Stepper } from 'framework7-react';
 import { API_URL, deleteCart, updateCart, updateOrder } from '@api';
 
-export const Items = ({ f7router }) => {
+export const Items = ({ f7router, isCart }) => {
   const [items, setItems] = useRecoilState(itemState);
   const [price, setPrice] = useRecoilState(priceState);
 
@@ -75,7 +75,7 @@ export const Items = ({ f7router }) => {
                       deleteCartItem(item.ITEMID);
                     }}
                   >
-                    <Icon f7="multiply" size="20" />
+                    {isCart && <Icon f7="multiply" size="20" />}
                   </div>
                 </div>
               </li>
