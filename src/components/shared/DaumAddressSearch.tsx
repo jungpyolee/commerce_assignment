@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { f7, List, Row, Col, ListInput, ListItem } from 'framework7-react';
+import { f7, List, Row, Col, ListInput, ListItem, AccordionItem, AccordionContent } from 'framework7-react';
 import DaumPostcode from 'react-daum-postcode';
 import { useFormikContext } from 'formik';
 import { Address } from '@constants';
@@ -42,8 +42,9 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
   };
 
   return (
-    <List accordionList noHairlines className="address-form-list mt-4">
-      <ListItem accordionItem accordionItemOpened title="배송지">
+    <List noHairlines className="  mt-4">
+      <ul>
+        <ListItem className="">배송지</ListItem>
         <Row>
           <Col width="70">
             <ListInput
@@ -94,7 +95,7 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
           outline
           className="pb-4"
         />
-      </ListItem>
+      </ul>
     </List>
   );
 };
