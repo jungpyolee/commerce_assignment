@@ -87,15 +87,15 @@ const HistoryPage = ({ f7route, f7router }) => {
           </div>{' '}
           <div>
             {' '}
-            <p>
+            <p className="whitespace-nowrap">
               총 <b>{currency(price(order.line_items))}</b>원
             </p>{' '}
           </div>
         </div>
 
-        {order.itemDetail.map((item) => {
+        {order.itemDetail.map((item, i) => {
           return (
-            <div className="h-16 flex mb-1">
+            <div key={i} className="h-16 flex mb-1">
               <img src={API_URL + item.image_path} className="w-16 h-16 mr-4 rounded-xl" />
               <div className="flex w-full justify-between items-center">
                 <div>
