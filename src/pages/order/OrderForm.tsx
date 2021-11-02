@@ -88,6 +88,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
               <AccordionContent>
                 <List>
                   <ListInput
+                    clearButton
                     label="이름"
                     type="text"
                     name="receiver_name"
@@ -99,6 +100,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
                     errorMessage={touched.receiver_name && errors.receiver_name}
                   />
                   <ListInput
+                    clearButton
                     label="전화번호"
                     type="text"
                     name="receiver_phone"
@@ -116,7 +118,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
 
           <DaumAddressSearch />
 
-          <Items f7router={f7router} />
+          <Items f7router={f7router} isCart={false} />
 
           <List noHairlines className="-mt-4 mb-5">
             <ListItem
