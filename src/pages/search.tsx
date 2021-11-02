@@ -1,7 +1,7 @@
 import { getItemsByName } from '@api';
 import ItemsWithSalePrice from '@components/ItemsWithSalePrice';
 import logo from '../assets/images/logo.png';
-
+import { debounce } from 'lodash';
 import {
   Link,
   List,
@@ -16,7 +16,7 @@ import {
   Tabs,
   Toolbar,
 } from 'framework7-react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const SearchPage = ({ f7route }) => {
   const [value, setValue] = useState('');
@@ -30,6 +30,15 @@ const SearchPage = ({ f7route }) => {
       });
   }, [value]);
 
+  const changeHandler = (e) => {
+    setValue(e.target.value);
+  };
+
+  const debouncedChangeHandler = useCallback(debounce(changeHandler, 500), []);
+
+  const clearHandler = () => {
+    setValue('');
+  };
   return (
     <Page name="search">
       <Navbar>
@@ -37,14 +46,10 @@ const SearchPage = ({ f7route }) => {
         <Subnavbar inner={false}>
           <Searchbar
             placeholder="상품명을 입력해주세요"
-            onChange={(e) => setValue(e.target.value)}
+            onChange={debouncedChangeHandler}
             disableButton
-            onClickClear={() => {
-              setValue('');
-            }}
-            onClickDisable={() => {
-              setValue('');
-            }}
+            onClickClear={clearHandler}
+            onClickDisable={clearHandler}
           ></Searchbar>
         </Subnavbar>
       </Navbar>
