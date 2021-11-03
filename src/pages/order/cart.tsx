@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import { badgeState, itemState, priceState } from '@atoms';
 import { Price } from './price';
 import { Items } from './items';
-
+import freeEvent from '../../assets/images/freeEvent.png';
 const CartPage = ({ f7route, f7router }: PageRouteProps) => {
   const [cartItems, setCartItems] = useState([]);
   const [items, setItems] = useRecoilState(itemState);
@@ -62,6 +62,7 @@ const CartPage = ({ f7route, f7router }: PageRouteProps) => {
           {/* item */}
           <Items f7router={f7router} isCart={true} />
           {/* price */}
+          <img className="w-full mb-4" src={freeEvent} alt="freeEvent" />
           <Price />
           {/* footer */}
           <div className="fixed flex bg-white  bg-opacity-90	bottom-0 h-12 w-full p-1">
