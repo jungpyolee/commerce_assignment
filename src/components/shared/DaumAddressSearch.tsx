@@ -42,9 +42,9 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
   };
 
   return (
-    <List noHairlines className="  mt-4">
+    <List noHairlines>
       <ul>
-        <ListItem className="">배송지</ListItem>
+        <li className="p-4 pl-5">배송지</li>
         <Row>
           <Col width="70">
             <ListInput
@@ -57,6 +57,7 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
               errorMessage={touched.zipcode && errors.zipcode}
               readonly
               outline
+              onFocus={() => setIsOpen(!isOpen)}
               className="pb-4"
             />
           </Col>
