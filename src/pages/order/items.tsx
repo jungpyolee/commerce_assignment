@@ -1,9 +1,9 @@
 import { itemState, priceState } from '@atoms';
 import { useRecoilState } from 'recoil';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { currency } from '@js/utils';
-import { AccordionContent, Icon, List, ListItem, Stepper } from 'framework7-react';
-import { API_URL, deleteCart, updateCart, updateOrder } from '@api';
+import { f7, Icon, List, ListItem } from 'framework7-react';
+import { API_URL, deleteCart } from '@api';
 
 export const Items = ({ f7router, isCart }) => {
   const [items, setItems] = useRecoilState(itemState);
@@ -40,7 +40,7 @@ export const Items = ({ f7router, isCart }) => {
     });
   };
   return (
-    <List noHairlines className="mt-4" mediaList>
+    <List noHairlines className="mt-4 mb-4" mediaList>
       <ListItem>
         <div className="w-full flex justify-between items-center">
           <b>주문 상세정보</b>{' '}
@@ -59,11 +59,16 @@ export const Items = ({ f7router, isCart }) => {
               <li key={item.id} className="h-30 border-b p-6">
                 <div className="flex justify-between">
                   <div className="flex">
-                    <img className="w-20 h-20 rounded-xl " slot="media" src={API_URL + item.image_path} />
-                    <div className=" p-3 ">
+                    <img
+                      onClick={() => f7router.navigate(`/items/${item.id}`)}
+                      className="w-20 h-20 rounded-xl "
+                      slot="media"
+                      src={API_URL + item.image_path}
+                    />
+                    <div className=" pt-1 pl-3 ">
                       <p className="text-sm font-bold">{item.name}</p>
-                      <p className="text-xs mb-1 ">{price?.final > 30000 ? '무료 배송' : '배송비 부담'}</p>
-                      <div className="flex items-center ">
+                      <p className="text-xs mb-1 ">{price?.final > 30000 ? '무료 배송' : '배송비 별도'}</p>
+                      <div className="flex mt-3 items-center ">
                         <p className="text-sm">{`${item.quantity}개`}</p> &nbsp;{' '}
                         <b>{`${currency(item.sale_price * item.quantity)} 원`}</b>
                       </div>{' '}
@@ -73,6 +78,7 @@ export const Items = ({ f7router, isCart }) => {
                   <div
                     onClick={() => {
                       deleteCartItem(item.ITEMID);
+                      f7.toast.show({ text: '상품을 제거했습니다.', position: 'center', closeTimeout: 1500 });
                     }}
                   >
                     {isCart && <Icon f7="multiply" size="20" />}
