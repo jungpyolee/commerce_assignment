@@ -1,5 +1,5 @@
 import Categories from '@components/Categories';
-import { Link, Navbar, NavLeft, NavRight, NavTitle, Page, Tab, Tabs, Toolbar } from 'framework7-react';
+import { f7, Link, Navbar, NavLeft, NavRight, NavTitle, Page, Tab, Tabs, Toolbar } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 import HomeTab from '@components/HomeTab';
 import { getCart, getItems } from '@api';
@@ -30,7 +30,10 @@ const HomePage = ({ f7route }) => {
         <NavTitle style={{ fontWeight: 700, letterSpacing: '8px' }}>GUZEGUZE</NavTitle>
         <NavRight>
           <Link
-            className="text-black "
+            onClick={() => {
+              if (badge === 0) f7.toast.show({ text: '담긴 상품이 없습니다', position: 'top', closeTimeout: 1500 });
+            }}
+            className="text-black"
             href="/line_items"
             iconF7="cart"
             iconBadge={badge ? badge : 0}
