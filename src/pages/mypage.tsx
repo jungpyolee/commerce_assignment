@@ -44,22 +44,17 @@ const MyPage = () => {
               </a>
             </div>
             <div className="w-full">
-              <a href={`/users/${currentUser?.id}`}>
-                <h1 className="text-md font-bold text-gray-900">
-                  {currentUser.isAuthenticated ? currentUser.email : '인썸니아'}
-                </h1>
-              </a>
+              <h1 className="text-md font-bold text-gray-900">
+                {currentUser.isAuthenticated ? currentUser.email : '인썸니아'}
+              </h1>
             </div>
-            <a href={`/users/${currentUser?.id}`}>
-              <i className="las la-angle-right" style={{ fontSize: '24px', color: 'gray' }} />
-            </a>
           </div>
         </div>
         <div className="py-8 grid grid-flow-col auto-cols-max grid-cols-3 gap-4 text-center">
           <div className="text-center">
             <i className="mb-2 las la-bell" style={{ fontSize: '42px', color: 'lightgray' }} />
             <br />
-            <span className="text-sm text-gray-600">알림</span>
+            <span className="text-sm text-gray-600">알림(미구현)</span>
           </div>
           <div className="text-center">
             <a href="/history">
@@ -69,11 +64,9 @@ const MyPage = () => {
             </a>
           </div>
           <div className="text-center">
-            <a href="/likes/list" className="text-sm text-gray-600">
-              <i className="mb-2 lar la-heart" style={{ fontSize: '42px', color: 'lightgray' }} />
-              <br />
-              좋아요{/* <span className="font-semibold text-gray-900">0</span> */}
-            </a>
+            <i className="mb-2 lar la-heart" style={{ fontSize: '42px', color: 'lightgray' }} />
+            <br />
+            좋아요(미구현){/* <span className="font-semibold text-gray-900">0</span> */}
           </div>
         </div>
         <div className="bg-white overflow-hidden sm:rounded-md">
