@@ -69,7 +69,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
           if (data) {
             f7router.back('/', { force: true });
             f7.dialog.confirm('주문 내역을 확인하시겠습니까?', '주문 완료', () => {
-              f7router.navigate('/history');
+              f7router.back('/history', { force: true });
             });
           }
         } catch (e) {
@@ -120,7 +120,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
 
           <Items f7router={f7router} isCart={false} />
 
-          <List noHairlines className="-mt-4 mb-5">
+          <List noHairlines className="mt-4 mb-4">
             <ListItem
               radio
               radioIcon="start"
@@ -135,7 +135,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
           </List>
 
           <Price />
-          <div className="fixed z-50 w-full bottom-0 p-3">
+          <div className="bg-white fixed z-50 w-full bottom-0 p-3">
             <Button type="submit" fill large disabled={isSubmitting || !isValid}>
               결제하기
             </Button>
