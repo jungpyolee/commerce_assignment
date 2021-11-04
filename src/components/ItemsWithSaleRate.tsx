@@ -1,13 +1,18 @@
 import { API_URL } from '@api';
 import { Item } from '@constants';
 import { currency, saleRate } from '@js/utils';
-import { ListItem } from 'framework7-react';
+import { List, ListItem } from 'framework7-react';
 import React from 'react';
 
-export default function ItemsWithSalePrice(props) {
+export default function ItemsWithSaleRate(props) {
   const items = props.items;
   return (
-    <ul>
+    <List noHairlines className="mt-0 text-sm ">
+      <p className=" font-bold px-4 pt-4 text-lg">특별 할인 상품 </p>
+      <p className="font-thin  px-4  ">
+        최대 <span className="font-semibold text-red-500">10%</span> 할인 혜택!
+      </p>
+
       {items.map((item: Item, i) => {
         let rate = saleRate(item);
 
@@ -27,6 +32,6 @@ export default function ItemsWithSalePrice(props) {
           )
         );
       })}
-    </ul>
+    </List>
   );
 }
