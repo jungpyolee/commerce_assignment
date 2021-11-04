@@ -1,30 +1,25 @@
-import { API_URL, getCart, getCategory, getItems, getItemsByCategoryId } from '@api';
+import { API_URL, getCart, getCategory, getItems, getItemsByCategoryId, getItemsByPage } from '@api';
 import { badgeState } from '@atoms';
 import { Item } from '@constants';
 import { currency } from '@js/utils';
 import { useFormik } from 'formik';
-import { Link, List, ListInput, ListItem, Navbar, NavRight, NavTitle, Page } from 'framework7-react';
+import { f7, Link, List, ListInput, ListItem, Navbar, NavRight, NavTitle, Page } from 'framework7-react';
 import { map } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import i18n from '../../assets/lang/i18n';
 
-const SortStates = [
-  ['created_at desc', '최신순'],
-  ['sale_price desc', '높은가격순'],
-  ['sale_price asc', '낮은가격순'],
-] as const;
-type SortState = typeof SortStates[number][0];
-
 interface ItemFilterProps {
-  s: SortState;
   category_id_eq: string;
 }
 
 const ItemIndexPage = ({ f7route }) => {
   const { is_main, category_id } = f7route.query;
-  const [badge, setBadge] = useRecoilState(badgeState);
+  const [category, setCategory] = useState(null);
   const [viewType, setViewType] = useState('grid');
+  const [totalCount, setTotalCount] = useState(0);
+  const [badge, setBadge] = useRecoilState(badgeState);
+
   // const queryClient = useQueryClient();
   // const ITEM_KEY = ['items', category_id * 1];
   // const { data: category } = useQuery<Category, Error>(
@@ -34,10 +29,36 @@ const ItemIndexPage = ({ f7route }) => {
   //     enabled: !!category_id,
   //   },
   // );
-  const [category, setCategory] = useState(null);
 
   const [items, setItems] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(2);
+  const [showPreloader, setShowPreloader] = useState(true);
+
+  const allowInfinite = useRef(true);
+
+  const loadMore = (currentPage) => {
+    if (!allowInfinite.current) return;
+
+    allowInfinite.current = false;
+
+    setTimeout(async () => {
+      if (currentPage >= 5) {
+        setShowPreloader(false);
+        f7.toast.show({ text: '마지막 상품입니다.', position: 'bottom', closeTimeout: 1500 });
+        return;
+      }
+
+      const { data } = await getItemsByPage(currentPage);
+
+      setItems(items.concat(data.items));
+
+      console.log(items);
+      setCurrentPage(currentPage + 1);
+
+      allowInfinite.current = true;
+    }, 500);
+  };
+
   useEffect(() => {
     // then을 사용
     if (category_id) {
@@ -58,7 +79,6 @@ const ItemIndexPage = ({ f7route }) => {
 
   const filterForm = useFormik<ItemFilterProps>({
     initialValues: {
-      s: 'created_at desc',
       category_id_eq: category_id,
     },
     onSubmit: async () => {
@@ -81,7 +101,15 @@ const ItemIndexPage = ({ f7route }) => {
   };
 
   return (
-    <Page noToolbar={!is_main} onPtrRefresh={onRefresh} ptr>
+    <Page
+      infinite
+      infiniteDistance={50}
+      infinitePreloader={is_main ? showPreloader : false}
+      onInfinite={() => loadMore(currentPage)}
+      noToolbar={!is_main}
+      onPtrRefresh={onRefresh}
+      ptr
+    >
       <Navbar backLink={!is_main}>
         <NavTitle>{(category && category.title) || '쇼핑'}</NavTitle>
         <NavRight>
@@ -89,7 +117,7 @@ const ItemIndexPage = ({ f7route }) => {
         </NavRight>
       </Navbar>
 
-      <form onSubmit={filterForm.handleSubmit} className="item-list-form p-3 table w-full border-b">
+      <form onSubmit={filterForm.handleSubmit} className="item-list-form fixed bg-white z-50 p-3 table w-full border-b">
         <div className="float-left">
           총 <b>{currency(items?.length)}</b>개 상품
         </div>
@@ -107,7 +135,7 @@ const ItemIndexPage = ({ f7route }) => {
           ))}
         </ListInput>
       </form>
-      <List noHairlines className="mt-0 text-sm font-thin ">
+      <List noHairlines className="mt-14 text-sm font-thin ">
         {items && (
           <ul>
             {viewType === 'list'
