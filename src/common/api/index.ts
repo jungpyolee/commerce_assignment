@@ -31,7 +31,9 @@ export const userMeApi = () => API.get<CurrentUser>('/users/me');
 
 export const getItems = (params = null) => API.get<any>('/items', { params });
 export const getItemsByName = (params) => API.get<any>(`items?q[name_cont]=${params}`);
+export const getItemsByPage = (params) => API.get<any>(`items?page=${params}`);
 export const getItemsByCategoryId = (params) => API.get<any>(`items?q[category_id_eq]=${params}`);
+
 export const getItem = (itemId) => API.get<any>(`/items/${itemId}`);
 
 export const getCategories = (params = null) => API.get<Category[]>('/categories', { params });
