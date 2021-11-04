@@ -2,7 +2,7 @@ import Categories from '@components/Categories';
 import { f7, Link, Navbar, NavLeft, NavRight, NavTitle, Page, Tab, Tabs, Toolbar } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 import HomeTab from '@components/HomeTab';
-import { getCart, getItems } from '@api';
+import { getCart, getItems, getItemsByPage } from '@api';
 import { useRecoilState } from 'recoil';
 import { badgeState } from '@atoms';
 import BestTab from '@components/BestTab';
@@ -19,8 +19,9 @@ const HomePage = ({ f7route }) => {
       if (res.data.line_items) setBadge(res.data.line_items.length);
     });
     (async () => {
-      const { data } = await getItems();
-      setItems(data.items);
+      const firstPage = await getItemsByPage(1);
+      const secondPage = await getItemsByPage(2);
+      setItems(firstPage.data.items.concat(secondPage.data.items));
     })();
   }, []);
 
