@@ -36,7 +36,7 @@ export const getItemsByCategoryId = (params) => API.get<any>(`items?q[category_i
 
 export const getItem = (itemId) => API.get<any>(`/items/${itemId}`);
 
-export const getCategories = (params = null) => API.get<Category[]>('/categories', { params });
+export const getCategories = (params = null) => API.get<any>('/categories', { params });
 export const getCategory = (id, params = null) => API.get<Category>(`/categories/${id}`, { params });
 
 export const getCart = (params = null) => API.get<any>('/cart', { params });
