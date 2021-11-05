@@ -1,38 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { API_URL, getCategories } from '@api';
-import { Link, SkeletonBlock, SkeletonText } from 'framework7-react';
-// import { useQuery } from 'react-query';
+import { Link } from 'framework7-react';
 import { Category } from '@constants';
-
-// const categoriesSkeletonPlaceholder = (size) => new Array(size).fill({});
-
+import { useQuery } from 'react-query';
 const Categories = () => {
-  // const { data: categories, isLoading, isError, isFetching } = useQuery<Category[], Error>(
-  //   'categories',
-  //   getCategories({ q: { s: ['title asc'] } }),
-  //   { placeholderData: categoriesSkeletonPlaceholder(16) },
-  // );
-
-  // if (isError) {
-  //   return (
-  //     <div className="h-32 flex items-center justify-center">
-  //       <span className="text-gray-400">서버에 문제가 발생 했습니다. </span>
-  //     </div>
-  //   );
-  // }
-  const [categories, setCategories] = useState([]);
-  useEffect(() => {
-    (async () => {
-      const { data } = await getCategories({ q: { s: ['title asc'] } });
-      setCategories(data.slice(0, 6));
-    })();
-  }, []);
-
+  const { data: categories, isError } = useQuery('categories', getCategories);
+  if (isError) {
+    return (
+      <div className="h-32 flex items-center justify-center">
+        <span className="text-gray-400">서버에 문제가 발생 했습니다. </span>
+      </div>
+    );
+  }
   return (
     <div className="mt-2 grid grid-cols-6 gap-2 p-2 border-b">
-      {categories.map((category: Category, i) => (
-        <div key={category.id}>
-          {categories.length ? (
+      {categories &&
+        categories.data.slice(6, 12).map((category: Category) => (
+          <div key={category.id}>
             <Link
               href={`/items?category_id=${category.id}`}
               className="bg-white h-20 flex flex-col items-center justify-center"
@@ -41,16 +25,8 @@ const Categories = () => {
               <img src={API_URL + category.image_path} alt="#" className="w-9 h-9 rounded-lg " />
               <span className="text-gray-500 mt-1">{category.title}</span>
             </Link>
-          ) : (
-            <Link href="#" className="bg-white h-20 flex flex-col items-center justify-center" key={i}>
-              <SkeletonBlock slot="media" className="w-14 h-14 rounded-lg shadow-sm" effect="fade" />
-              <span className="text-gray-500 mt-1">
-                <SkeletonText>---</SkeletonText>
-              </span>
-            </Link>
-          )}
-        </div>
-      ))}
+          </div>
+        ))}
     </div>
   );
 };

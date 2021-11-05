@@ -18,7 +18,7 @@ export default function ItemsWithSaleRate(props) {
 
         return (
           rate > 0 && (
-            <React.Fragment key={item.id}>
+            <React.Fragment key={i}>
               <ListItem mediaItem link={`/items/${item.id}`} className="w-full pt-2">
                 <img slot="media" alt="" src={API_URL + item.image_path} className="w-40 m-auto radius rounded-xl " />
                 <div className="font-black pt-2">{item.name}</div>

@@ -23,7 +23,8 @@ import { currency } from '@js/utils';
 import { useRecoilState } from 'recoil';
 import { badgeState } from '@atoms';
 import logo from '../../assets/images/logo.png';
-import { toast } from '@aws-amplify/ui';
+import { ItemShowPageDetailSwiper, ItemShowPageMainSwiper } from '@components/Swipers';
+
 const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
   const [badge, setBadge] = useRecoilState(badgeState);
 
@@ -32,8 +33,6 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
   const [liked, setLiked] = useState(false);
   const [lookMore, setLookMore] = useState(false);
   const itemId = f7route.params.id;
-
-  const hueDegree = [45, 135, 180];
 
   const saleRate = parseInt((((item?.list_price - item?.sale_price) / item?.list_price) * 100).toFixed(0));
 
@@ -70,20 +69,7 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
     >
       <Navbar title="상품상세" backLink />
 
-      {item && (
-        <Swiper className="" pagination>
-          {/* 기본이미지 */}
-          <SwiperSlide key="0">
-            <img className="max-h-96 w-full" src={API_URL + item.image_path} alt="itemImage" />
-          </SwiperSlide>
-          {/* 서브이미지3개 */}
-          {item?.images?.map((image) => (
-            <SwiperSlide key={image.id + 1}>
-              <img className="max-h-96 w-full" src={API_URL + image.image_path} alt="itemImage" />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      )}
+      {item && <ItemShowPageMainSwiper item={item} />}
 
       <div className="">
         {item && (
@@ -115,23 +101,7 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
               </Toolbar>
               <Tabs className="bg-gray-200 p-4">
                 <Tab tabActive id="tab-description">
-                  <Swiper effect={'fade'} autoplay={{ delay: 750 }}>
-                    <SwiperSlide>
-                      <img className="max-h-96 w-full rounded-xl pb-2 -hue-rotate-90" src={API_URL + item.image_path} />
-                    </SwiperSlide>{' '}
-                    <SwiperSlide>
-                      <img
-                        className="max-h-96 w-full rounded-xl pb-2 -hue-rotate-180"
-                        src={API_URL + item.image_path}
-                      />
-                    </SwiperSlide>{' '}
-                    <SwiperSlide>
-                      <img
-                        className="max-h-96 w-full rounded-xl pb-2 -hue-rotate-270"
-                        src={API_URL + item.image_path}
-                      />
-                    </SwiperSlide>
-                  </Swiper>
+                  <ItemShowPageDetailSwiper item={item} />
                   <div className={lookMore ? 'text-xs' : 'text-xs line-clamp-3'}>{item.description}</div>
 
                   <div

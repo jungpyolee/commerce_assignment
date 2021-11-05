@@ -4,9 +4,7 @@ import { currency, saleRate } from '@js/utils';
 import { List, ListItem } from 'framework7-react';
 import React from 'react';
 
-export default function ItemsWithoutSaleRate(props) {
-  const items = props.items;
-
+export default function ItemsWithoutSaleRate({ items }) {
   return (
     <List noHairlines className="mt-0 text-sm  ">
       <p className="font-bold px-4 pt-4 text-lg">주간 인기 상품</p>
