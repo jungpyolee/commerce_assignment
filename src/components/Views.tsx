@@ -2,8 +2,6 @@ import { logoutAPI } from '@api';
 import CustomPanel from '@components/shared/CustomPanel';
 import useAuth from '@hooks/useAuth';
 import LandingPage from '@pages/landing';
-import { destroyToken, getToken } from '@store';
-import { sleep } from '@utils/index';
 import { Auth } from 'aws-amplify';
 import { Link, Toolbar, View, Views } from 'framework7-react';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -29,7 +27,7 @@ const F7Views = () => {
     } catch (error) {
       unAuthenticateUser();
     } finally {
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 1000);
     }
   }, [authenticateUser, unAuthenticateUser]);
 
