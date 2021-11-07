@@ -7,10 +7,10 @@ import { f7, List, ListInput, Button, ListItem, AccordionContent } from 'framewo
 import { Router } from 'framework7/types';
 
 import { useRecoilState } from 'recoil';
-import { itemState, priceState } from '@atoms';
+import { badgeState, itemState } from '@atoms';
 
-import { Price } from './price';
-import { Items } from './items';
+import { OrderPrice } from '../../components/OrderPrice';
+import { ItemsWithOrderDetail } from '../../components/ItemComponents/ItemsWithOrderDetail';
 import DaumAddressSearch from '@components/shared/DaumAddressSearch';
 
 const OrderNewSchema = Yup.object().shape({
@@ -45,7 +45,7 @@ interface OrderFormValue {
 
 const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
   const [items, setItems] = useRecoilState(itemState);
-
+  const [badge, setBadge] = useRecoilState(badgeState);
   const formikRef = useRef(null);
   const initialValues: OrderFormValue = {
     receiver_name: '',
@@ -68,8 +68,9 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
           const { data } = await updateOrder(orderId, values);
           if (data) {
             f7router.back('/', { force: true });
+            setBadge(0);
             f7.dialog.confirm('주문 내역을 확인하시겠습니까?', '주문 완료', () => {
-              f7router.back('/history', { force: true });
+              f7router.navigate('/history');
             });
           }
         } catch (e) {
@@ -83,7 +84,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
     >
       {({ values, isSubmitting, handleChange, handleBlur, errors, touched, isValid }) => (
         <Form>
-          <List noHairlines className="mt-4" inlineLabels accordionList>
+          <List noHairlines className="mt-4 -mb-4" inlineLabels accordionList>
             <ListItem accordionItem accordionItemOpened title="받는 분">
               <AccordionContent>
                 <List>
@@ -115,11 +116,8 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
               </AccordionContent>
             </ListItem>
           </List>
-
           <DaumAddressSearch />
-
-          <Items f7router={f7router} isCart={false} />
-
+          <ItemsWithOrderDetail f7router={f7router} isCart={false} />
           <List noHairlines className="mt-4 mb-4">
             <ListItem
               radio
@@ -134,7 +132,7 @@ const OrderForm = ({ orderId, f7router }: OrderFormProps) => {
             <ListItem radio radioIcon="start" title="카카오페이" value="kakaoPay" name="payment"></ListItem>
           </List>
 
-          <Price />
+          <OrderPrice />
           <div className="bg-white fixed z-50 w-full bottom-0 p-3">
             <Button type="submit" fill large disabled={isSubmitting || !isValid}>
               결제하기
