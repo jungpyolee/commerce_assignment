@@ -42,7 +42,7 @@ const DaumAddressSearch: React.FC<DaumAddressSearchProps> = ({ title = '주소 �
   };
 
   return (
-    <List noHairlines>
+    <List className="mb-0" noHairlines>
       <ul>
         <li className="p-4 pl-5">배송지</li>
         <Row>
