@@ -73,7 +73,7 @@ const CartPage = ({ f7router }: PageRouteProps) => {
               className="bg-gray-800 w-full text-white font-semibold h-full"
               fill
             >
-              총 {cartItems.length}개 &nbsp;&nbsp; {currency(price.final)}원 구매하기
+              총 {items?.length}개 &nbsp;&nbsp; {currency(price.final)}원 구매하기
             </Button>
           </div>
         </div>
