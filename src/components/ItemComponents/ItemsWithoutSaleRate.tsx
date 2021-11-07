@@ -1,6 +1,6 @@
 import { API_URL } from '@api';
 import { Item } from '@constants';
-import { currency, saleRate } from '@js/utils';
+import { currency } from '@js/utils';
 import { List, ListItem } from 'framework7-react';
 import React from 'react';
 
@@ -15,7 +15,7 @@ export default function ItemsWithoutSaleRate({ items }) {
         <ul>
           {items.map((item: Item, i) => {
             return (
-              <React.Fragment key={item.id}>
+              <React.Fragment key={i}>
                 <div className="sm:w-1/4 md: w-1/2 inline-flex grid-list-item relative">
                   <ListItem
                     mediaItem

@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, Link, List, ListInput, ListItem, Toggle } from 'framework7-react';
-import event1 from '../assets/images/event1.png';
-import event2 from '../assets/images/event2.png';
-import event3 from '../assets/images/event3.png';
-import event4 from '../assets/images/event4.png';
-import event5 from '../assets/images/event5.png';
+import event1 from '../../assets/images/event1.png';
+import event2 from '../../assets/images/event2.png';
+import event3 from '../../assets/images/event3.png';
+import event4 from '../../assets/images/event4.png';
+import event5 from '../../assets/images/event5.png';
 
 export default function EventTab() {
   const [onGoing, setOnGoing] = useState(true);
   let slide = [event1, event2, event3, event4, event5];
 
   return (
-    <div>
+    <React.Fragment>
       <div className="p-4 mb-5 h-5">
         <div className="flex justify-between ">
-          {onGoing ? <div>진행중인 이벤트 {slide.length}건</div> : <div>종료 0건</div>}{' '}
+          {onGoing ? (
+            <p>
+              진행중인 이벤트
+              <span>
+                <b> {slide.length}건</b>
+              </span>
+            </p>
+          ) : (
+            <p>
+              종료 <b>0건</b>
+            </p>
+          )}
           <div className=" text-xs w-20 h-6  flex ">
             <div
               onClick={() => setOnGoing(true)}
@@ -24,7 +34,6 @@ export default function EventTab() {
                   : 'w-12 h-6 text-gray-600 border rounded-l flex justify-center items-center'
               }
             >
-              {' '}
               진행중
             </div>
             <div
@@ -35,7 +44,6 @@ export default function EventTab() {
                   : 'w-8 h-6 text-gray-600 flex border rounded-r justify-center items-center'
               }
             >
-              {' '}
               종료
             </div>
           </div>
@@ -48,6 +56,6 @@ export default function EventTab() {
             return <img key={i} src={i} className="max-w-full w-full h-40  rounded-2xl px-2 py-1" alt="itemImage" />;
           })}
       </div>
-    </div>
+    </React.Fragment>
   );
 }

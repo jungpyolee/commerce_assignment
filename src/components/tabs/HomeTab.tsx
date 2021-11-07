@@ -1,9 +1,9 @@
 import React from 'react';
-import Categories from './Categories';
-import ItemsWithoutSaleRate from './ItemsWithoutSaleRate';
-import ItemsWithSaleRate from './ItemsWithSaleRate';
-import event5 from '../assets/images/event5.png';
-import { HomeTabSwiper } from './Swipers';
+import Categories from '../Categories';
+import ItemsWithoutSaleRate from '../ItemComponents/ItemsWithoutSaleRate';
+import ItemsWithSaleRate from '../ItemComponents/ItemsWithSaleRate';
+import event5 from '../../assets/images/event5.png';
+import { HomeTabSwiper } from '../Swipers';
 export default function HomeTab({ items }) {
   return (
     <React.Fragment>
