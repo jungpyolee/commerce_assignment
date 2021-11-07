@@ -54,11 +54,11 @@ const MyPage = () => {
           <div className="text-center">
             <i className="mb-2 las la-bell" style={{ fontSize: '42px', color: 'lightgray' }} />
             <br />
-            <span className="text-sm text-gray-600">알림(미구현)</span>
+            <span className="font-thin text-gray-900">알림(미구현)</span>
           </div>
           <div className="text-center">
             <a href="/history">
-              <i className="mb-2 las la-file-invoice" style={{ fontSize: '42px', color: 'lightgray' }} />
+              <i className="text-gray-600 mb-2 las la-file-invoice" style={{ fontSize: '42px' }} />
               <br />
               <span className="text-sm text-gray-600">주문</span>
             </a>
@@ -66,7 +66,7 @@ const MyPage = () => {
           <div className="text-center">
             <i className="mb-2 lar la-heart" style={{ fontSize: '42px', color: 'lightgray' }} />
             <br />
-            좋아요(미구현){/* <span className="font-semibold text-gray-900">0</span> */}
+            <span className="font-thin text-gray-900">좋아요(미구현)</span>
           </div>
         </div>
         <div className="bg-white overflow-hidden sm:rounded-md">
