@@ -1,9 +1,7 @@
-import { Button, f7ready, Navbar, Page, Swiper, SwiperSlide, Toolbar } from 'framework7-react';
-import { sampleSize, zip } from 'lodash';
-import React, { useEffect, useState } from 'react';
-import sanitizeHtml from '../js/utils/sanitizeHtml';
+import { Button, Navbar, Page, Toolbar } from 'framework7-react';
+import React from 'react';
 
-const IntroPage = (props) => {
+const IntroPage = () => {
   return (
     <Page>
       <Navbar className="hidden" />
@@ -16,7 +14,7 @@ const IntroPage = (props) => {
             회원가입
           </Button>
         </div>
-      </Toolbar>{' '}
+      </Toolbar>
     </Page>
   );
 };

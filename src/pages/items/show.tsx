@@ -1,48 +1,23 @@
 import { PageRouteProps, Item } from '@constants';
-import { addCart, API_URL, getCart, getItem } from '@api';
-import {
-  BlockTitle,
-  Button,
-  f7,
-  Icon,
-  Link,
-  List,
-  ListItem,
-  Navbar,
-  Page,
-  Sheet,
-  Stepper,
-  Swiper,
-  SwiperSlide,
-  Tab,
-  Tabs,
-  Toolbar,
-} from 'framework7-react';
-import React, { useEffect, useState } from 'react';
-import { currency } from '@js/utils';
+import { addCart, getCart, getItem } from '@api';
+import { Button, f7, Icon, Link, Navbar, Page, Sheet, Stepper, Tab, Tabs, Toolbar } from 'framework7-react';
+import React, { useState } from 'react';
+import { currency, saleRate } from '@js/utils';
 import { useRecoilState } from 'recoil';
 import { badgeState } from '@atoms';
 import logo from '../../assets/images/logo.png';
 import { ItemShowPageDetailSwiper, ItemShowPageMainSwiper } from '@components/Swipers';
+import { useQuery } from 'react-query';
 
 const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
   const [badge, setBadge] = useRecoilState(badgeState);
 
-  const [item, setItem] = useState<Item>();
   const [count, setCount] = useState(1);
   const [liked, setLiked] = useState(false);
   const [lookMore, setLookMore] = useState(false);
   const itemId = f7route.params.id;
 
-  const saleRate = parseInt((((item?.list_price - item?.sale_price) / item?.list_price) * 100).toFixed(0));
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await getItem(itemId);
-
-      setItem(data);
-    })();
-  }, []);
+  const { data: item } = useQuery(['getItem', { id: itemId }], () => getItem(itemId));
 
   const addCartHandler = (id, count) => {
     addCart(id, count).then((res) => {
@@ -69,56 +44,53 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
     >
       <Navbar title="상품상세" backLink />
 
-      {item && <ItemShowPageMainSwiper item={item} />}
+      {item?.data && <ItemShowPageMainSwiper item={item.data} />}
 
-      <div className="">
-        {item && (
-          <div>
-            {/* header */}
-            <div className="p-4 pt-0">
-              <div className="">
-                {' '}
-                <img src={logo} alt="logo" className="w-16 h-12" />
+      {item?.data && (
+        <div>
+          {/* header */}
+          <div className="p-4 pt-0">
+            <div className="">
+              {' '}
+              <img src={logo} alt="logo" className="w-16 h-12" />
+            </div>
+            <div className="font-semibold text-lg">{item.data.name}</div>
+            {saleRate(item.data) > 0 && (
+              <div className="flex">
+                <p className="text-red-500">{saleRate(item.data)}%</p> &nbsp;
+                <p className="text-gray-400 line-through">{currency(item.data.list_price)}</p>
               </div>
-              <div className="font-semibold text-lg">{item.name}</div>
-              {saleRate > 0 && (
-                <div className="flex">
-                  <p className="text-red-500">{saleRate}%</p> &nbsp;
-                  <p className="text-gray-400 line-through">{currency(item.list_price)}</p>
-                </div>
-              )}
-              <p className="font-semibold text-xl">{currency(item.sale_price)} 원</p>
-            </div>
-
-            {/* detail */}
-            <div>
-              <Toolbar className=" text-sm" noHairline tabbar>
-                <Link tabLink="#tab-description" tabLinkActive>
-                  상품정보
-                </Link>
-                <Link tabLink="#tab-review">상품리뷰</Link>
-                <Link tabLink="#tab-QnA">문의</Link>
-              </Toolbar>
-              <Tabs className="bg-gray-200 p-4">
-                <Tab tabActive id="tab-description">
-                  <ItemShowPageDetailSwiper item={item} />
-                  <div className={lookMore ? 'text-xs' : 'text-xs line-clamp-3'}>{item.description}</div>
-
-                  <div
-                    onClick={lookMoreHandler}
-                    className="mx-auto flex justify-center items-center w-1/2 h-10 mt-2 bg-gray-100 rounded-xl"
-                  >
-                    <p>상세정보 {lookMore ? '접기' : '더보기'}</p>
-                    <Icon className="pt-0.5 pl-1" size={20} f7={lookMore ? 'chevron_up' : 'chevron_down'} />
-                  </div>
-                </Tab>
-                <Tab id="tab-review">아직 리뷰가 없습니다.</Tab>
-                <Tab id="tab-QnA">아직 QnA가 없습니다.</Tab>
-              </Tabs>
-            </div>
+            )}
+            <p className="font-semibold text-xl">{currency(item.data.sale_price)} 원</p>
           </div>
-        )}
-      </div>
+
+          {/* detail */}
+
+          <Toolbar className=" text-sm" noHairline tabbar>
+            <Link tabLink="#tab-description" tabLinkActive>
+              상품정보
+            </Link>
+            <Link tabLink="#tab-review">상품리뷰</Link>
+            <Link tabLink="#tab-QnA">문의</Link>
+          </Toolbar>
+          <Tabs className="bg-gray-200 p-4">
+            <Tab tabActive id="tab-description">
+              <ItemShowPageDetailSwiper item={item.data} />
+              <div className={lookMore ? 'text-xs' : 'text-xs line-clamp-3'}>{item.data.description}</div>
+
+              <div
+                onClick={lookMoreHandler}
+                className="mx-auto flex justify-center items-center w-1/2 h-10 mt-2 bg-gray-100 rounded-xl"
+              >
+                <p>상세정보 {lookMore ? '접기' : '더보기'}</p>
+                <Icon className="pt-0.5 pl-1" size={20} f7={lookMore ? 'chevron_up' : 'chevron_down'} />
+              </div>
+            </Tab>
+            <Tab id="tab-review">아직 리뷰가 없습니다.</Tab>
+            <Tab id="tab-QnA">아직 QnA가 없습니다.</Tab>
+          </Tabs>
+        </div>
+      )}
 
       {/* footer */}
       <div className="fixed z-50 flex border items-center bg-white	bottom-0 h-14 w-full p-1">
@@ -148,7 +120,7 @@ const ItemShowPage = ({ f7route, f7router }: PageRouteProps) => {
         </div>
         <div className="text-xl flex justify-between my-2">
           <p>총액</p>
-          <p>{currency(item?.sale_price * count)} 원</p>
+          <p>{currency(item?.data.sale_price * count)} 원</p>
         </div>
 
         <Button

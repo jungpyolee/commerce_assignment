@@ -1,70 +1,70 @@
-import { Button, f7, Icon, Link, Navbar, Page } from 'framework7-react';
+import { Button, Icon, Navbar, Page } from 'framework7-react';
 import { PageRouteProps } from '@constants';
-import { API_URL, getCart, getItem } from '@api';
+import { getCart, getItem } from '@api';
 import React, { useEffect, useState } from 'react';
-import { array } from 'prop-types';
 import { currency } from '@js/utils';
 import { useRecoilState } from 'recoil';
 import { badgeState, itemState, priceState } from '@atoms';
-import { Price } from './price';
-import { Items } from './items';
+import { OrderPrice } from '../../components/OrderPrice';
+import { ItemsWithOrderDetail } from '../../components/ItemComponents/ItemsWithOrderDetail';
 import freeEvent from '../../assets/images/freeEvent.png';
-const CartPage = ({ f7route, f7router }: PageRouteProps) => {
+const CartPage = ({ f7router }: PageRouteProps) => {
   const [cartItems, setCartItems] = useState([]);
   const [items, setItems] = useRecoilState(itemState);
   const [price, setPrice] = useRecoilState(priceState);
   const [badge, setBadge] = useRecoilState(badgeState);
 
   useEffect(() => {
-    (async () => {
-      const { data } = await getCart();
-
-      setCartItems(data.line_items);
-
-      let array = [];
-
-      for (let i = 0; i < data.line_items.length; i++) {
-        const result = await getItem(data.line_items[i].item_id);
-        result.data.quantity = data.line_items[i].quantity;
-        result.data.ITEMID = data.line_items[i].id;
-        array.push(result.data);
-      }
-      setItems(array);
-      let totalPrice = 0;
-      let discountPrice = 0;
-      let finalPrice = 0;
-      let shippingFee = 3000;
-      for (let i = 0; i < array.length; i++) {
-        totalPrice += array[i].list_price * array[i].quantity;
-        discountPrice += (array[i].list_price - array[i].sale_price) * array[i].quantity;
-      }
-
-      finalPrice = totalPrice - discountPrice;
-      if (finalPrice < 30000) finalPrice += shippingFee;
-      setPrice({ total: totalPrice, discount: discountPrice, final: finalPrice });
-    })();
+    getCartListFn();
   }, []);
 
+  const getCartListFn = async () => {
+    const { data } = await getCart();
+
+    setCartItems(data.line_items);
+
+    let detailedItem = [];
+
+    for (let i = 0; i < data.line_items.length; i++) {
+      const result = await getItem(data.line_items[i].item_id);
+      result.data.quantity = data.line_items[i].quantity;
+      result.data.ITEMID = data.line_items[i].id;
+      detailedItem.push(result.data);
+    }
+    setItems(detailedItem);
+    let totalPrice = 0;
+    let discountPrice = 0;
+    let finalPrice = 0;
+    let freeShipment = 30000;
+    let shippingFee = 3000;
+
+    for (let i = 0; i < detailedItem.length; i++) {
+      totalPrice += detailedItem[i].list_price * detailedItem[i].quantity;
+      discountPrice += (detailedItem[i].list_price - detailedItem[i].sale_price) * detailedItem[i].quantity;
+    }
+
+    finalPrice = totalPrice - discountPrice;
+    if (finalPrice < freeShipment) finalPrice += shippingFee;
+    setPrice({ total: totalPrice, discount: discountPrice, final: finalPrice });
+  };
+
+  const badgeRefresher = () => {
+    getCart().then((res) => {
+      if (res.data.line_items) setBadge(res.data.line_items.length);
+    });
+  };
+
   return (
-    <Page
-      onPageBeforeOut={() => {
-        getCart().then((res) => {
-          if (res.data.line_items) setBadge(res.data.line_items.length);
-        });
-      }}
-      className="bg-gray-200"
-      noToolbar
-    >
-      <Navbar title="장바구니" backLink onBackClick={() => {}} />
+    <Page onPageBeforeOut={badgeRefresher} className="bg-gray-200" noToolbar>
+      <Navbar title="장바구니" backLink />
 
       {cartItems.length ? (
         <div>
           {/* item */}
-          <Items f7router={f7router} isCart={true} />
+          <ItemsWithOrderDetail f7router={f7router} isCart={true} />
           {/* price */}
           <img className="w-full mb-4" src={freeEvent} alt="freeEvent" />
-          <Price />
-          {/* footer */}
+          <OrderPrice />
           <div className="fixed flex bg-white  bg-opacity-90	bottom-0 h-12 w-full p-1">
             <Button
               onClick={() => {

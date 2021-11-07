@@ -17,18 +17,7 @@ const ItemIndexPage = ({ f7route }) => {
   const { is_main, category_id } = f7route.query;
   const [category, setCategory] = useState(null);
   const [viewType, setViewType] = useState('grid');
-  const [totalCount, setTotalCount] = useState(0);
   const [badge, setBadge] = useRecoilState(badgeState);
-
-  // const queryClient = useQueryClient();
-  // const ITEM_KEY = ['items', category_id * 1];
-  // const { data: category } = useQuery<Category, Error>(
-  //   ['category', parseInt(category_id, 10)],
-  //   getCategory(category_id),
-  //   {
-  //     enabled: !!category_id,
-  //   },
-  // );
 
   const [items, setItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(2);
@@ -81,10 +70,7 @@ const ItemIndexPage = ({ f7route }) => {
     initialValues: {
       category_id_eq: category_id,
     },
-    onSubmit: async () => {
-      // await queryClient.removeQueries(ITEM_KEY);
-      // await refetch();
-    },
+    onSubmit: async () => {},
   });
 
   // const { data, refetch } = useQuery<Items, Error>(

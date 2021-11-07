@@ -1,15 +1,14 @@
-import Categories from '@components/Categories';
-import { f7, Link, Navbar, NavLeft, NavRight, NavTitle, Page, Tab, Tabs, Toolbar } from 'framework7-react';
+import { f7, Link, Navbar, NavRight, NavTitle, Page, Tab, Tabs, Toolbar } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
-import HomeTab from '@components/HomeTab';
-import { getCart, getItems, getItemsByPage } from '@api';
+import HomeTab from '@components/tabs/HomeTab';
+import { getCart, getItemsByPage } from '@api';
 import { useRecoilState } from 'recoil';
 import { badgeState } from '@atoms';
-import BestTab from '@components/BestTab';
-import HotDealTab from '@components/HotDealTab';
-import EventTab from '@components/EventTab';
+import BestTab from '@components/tabs/BestTab';
+import HotDealTab from '@components/tabs/HotDealTab';
+import EventTab from '@components/tabs/EventTab';
 
-const HomePage = ({ f7route }) => {
+const HomePage = () => {
   const [badge, setBadge] = useRecoilState(badgeState);
 
   const [items, setItems] = useState([]);
@@ -28,7 +27,7 @@ const HomePage = ({ f7route }) => {
   return (
     <Page name="home">
       <Navbar>
-        <NavTitle style={{ fontWeight: 700, letterSpacing: '8px' }}>GUZEGUZE</NavTitle>
+        <NavTitle style={{ fontSize: 20, fontWeight: 700, letterSpacing: '6px' }}>GUZEGUZE</NavTitle>
         <NavRight>
           <Link
             onClick={() => {
@@ -43,7 +42,7 @@ const HomePage = ({ f7route }) => {
         </NavRight>
       </Navbar>
 
-      <Toolbar style={{ fontSize: 14, backgroundColor: 'white' }} tabbar position="top">
+      <Toolbar noBorder style={{ fontSize: 14, backgroundColor: 'white' }} tabbar position="top">
         <Link tabLink="#tab-home" tabLinkActive>
           홈
         </Link>
@@ -67,9 +66,6 @@ const HomePage = ({ f7route }) => {
           <HotDealTab items={items} />
         </Tab>
       </Tabs>
-
-      {/* 
-    <Categories /> */}
     </Page>
   );
 };

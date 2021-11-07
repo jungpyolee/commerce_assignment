@@ -1,4 +1,4 @@
-import { Category, Token } from '@constants';
+import { Category, Item, Token } from '@constants';
 import { CurrentUser } from '@interfaces';
 import { getToken } from '@store';
 import { API, API_URL, VERSION } from './api.config';
@@ -34,13 +34,13 @@ export const getItemsByName = (params) => API.get<any>(`items?q[name_cont]=${par
 export const getItemsByPage = (params) => API.get<any>(`items?page=${params}`);
 export const getItemsByCategoryId = (params) => API.get<any>(`items?q[category_id_eq]=${params}`);
 
-export const getItem = (itemId) => API.get<any>(`/items/${itemId}`);
+export const getItem = (itemId) => API.get(`/items/${itemId}`);
 
 export const getCategories = (params = null) => API.get<any>('/categories', { params });
 export const getCategory = (id, params = null) => API.get<Category>(`/categories/${id}`, { params });
 
 export const getCart = (params = null) => API.get<any>('/cart', { params });
-export const addCart = (id, count) => API.post('/line_items', { item_id: id, quantity: count });
+export const addCart = (id: number, count: number) => API.post('/line_items', { item_id: id, quantity: count });
 export const updateCart = (id, quantity) => API.patch(`/line_items/${id}`, { quantity: quantity });
 export const deleteCart = (id) => API.delete(`/line_items/${id}`);
 

@@ -1,79 +1,68 @@
 import { API_URL, getItem, getOrder, getOrders } from '@api';
 import { currency } from '@js/utils';
-import {
-  Button,
-  Icon,
-  Link,
-  Navbar,
-  NavLeft,
-  NavRight,
-  NavTitle,
-  Page,
-  Preloader,
-  Tab,
-  Tabs,
-  Toolbar,
-} from 'framework7-react';
+import { Icon, Link, Navbar, NavTitle, Page, Preloader } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
 
-const HistoryPage = ({ f7route, f7router }) => {
+const HistoryPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [list, setList] = useState([]);
+
   useEffect(() => {
-    (async () => {
-      const { data } = await getOrders();
-
-      const completeOrders = data.orders.filter((order) => {
-        return order.status === 'complete';
-      });
-
-      let orderDetail = [];
-
-      for (let i = 0; i < completeOrders.length; i++) {
-        const result = await getOrder(completeOrders[i].id);
-
-        orderDetail.push(result.data);
-      }
-
-      console.log(orderDetail, 'ss');
-
-      let moreDetail = [];
-
-      for (let i = 0; i < orderDetail.length; i++) {
-        let itemDetail = [];
-        for (let j = 0; j < orderDetail[i].line_items.length; j++) {
-          const { data } = await getItem(orderDetail[i].line_items[j].item_id);
-          data.quantity = orderDetail[i].line_items[j].quantity;
-          itemDetail.push(data);
-        }
-
-        orderDetail[i].itemDetail = itemDetail;
-
-        moreDetail.push(orderDetail[i]);
-      }
-
-      setList(moreDetail);
-    })();
+    getHistoryListFn();
   }, []);
 
-  console.log(list);
+  const getHistoryListFn = async () => {
+    const { data } = await getOrders();
 
-  const price = (line_items) => {
+    const completeOrders = data.orders.filter((order) => {
+      return order.status === 'complete';
+    });
+    let orderDetail = [];
+
+    for (let i = 0; i < completeOrders.length; i++) {
+      const result = await getOrder(completeOrders[i].id);
+
+      orderDetail.push(result.data);
+    }
+
+    let moreDetail = [];
+
+    for (let i = 0; i < orderDetail.length; i++) {
+      let itemDetail = [];
+      for (let j = 0; j < orderDetail[i].line_items.length; j++) {
+        const { data } = await getItem(orderDetail[i].line_items[j].item_id);
+        data.quantity = orderDetail[i].line_items[j].quantity;
+        itemDetail.push(data);
+      }
+
+      orderDetail[i].itemDetail = itemDetail;
+
+      moreDetail.push(orderDetail[i]);
+    }
+
+    setList(moreDetail);
+    setIsLoading(false);
+  };
+
+  const totalPrice = (line_items) => {
     let price = 0;
+    let freeShipment = 30000;
+    let shippingFee = 3000;
     for (let i = 0; i < line_items.length; i++) {
       price = price + line_items[i].total;
     }
 
-    if (price >= 30000) {
+    if (price >= freeShipment) {
       return price;
     } else {
-      price = price + 3000;
+      price = price + shippingFee;
       return price;
     }
   };
 
-  const orderList = list.map((order) => {
+  const orderList = list.map((order, i) => {
     return (
-      <div className="bg-white  m-4 p-4 border rounded-xl">
+      <div key={i} className="bg-white  m-4 p-4 border rounded-xl">
         <div className="h-6 mb-2 text-lg text-blue-500 text-semibold">주문 완료</div>
 
         <div className="mb-2 flex justify-between">
@@ -84,12 +73,11 @@ const HistoryPage = ({ f7route, f7router }) => {
               {order.address2}
             </p>
             <p className="text-xs text-gray-600">{order.receiver_phone}</p>
-          </div>{' '}
+          </div>
           <div>
-            {' '}
             <p className="whitespace-nowrap">
-              총 <b>{currency(price(order.line_items))}</b>원
-            </p>{' '}
+              총 <b>{currency(totalPrice(order.line_items))}</b>원
+            </p>
           </div>
         </div>
 
@@ -104,7 +92,7 @@ const HistoryPage = ({ f7route, f7router }) => {
                   <p>
                     {currency(item.sale_price)}원 {item.quantity}개
                   </p>
-                </div>{' '}
+                </div>
                 <Link href={`/items/${item.id}`} className="border text-sm p-2 h-6 rounded">
                   보러가기
                 </Link>
@@ -122,7 +110,12 @@ const HistoryPage = ({ f7route, f7router }) => {
         <NavTitle>주문 내역</NavTitle>
       </Navbar>
 
-      {list.length ? (
+      {isLoading ? (
+        <div className="w-full h-full flex flex-col items-center justify-center">
+          <Preloader />
+          <p className="text-xl  mt-4 text-bold">주문 내역을 불러오는 중</p>
+        </div>
+      ) : list.length ? (
         orderList
       ) : (
         <div className="w-full h-full flex flex-col items-center justify-center">
@@ -134,4 +127,4 @@ const HistoryPage = ({ f7route, f7router }) => {
     </Page>
   );
 };
-export default React.memo(HistoryPage);
+export default HistoryPage;

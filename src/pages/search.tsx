@@ -1,24 +1,12 @@
-import { getItemsByName } from '@api';
-import ItemsWithSalePrice from '@components/ItemsWithSalePrice';
+import { API_URL, getItemsByName } from '@api';
 import logo from '../assets/images/logo.png';
 import { debounce } from 'lodash';
-import {
-  Link,
-  List,
-  Navbar,
-  NavLeft,
-  NavRight,
-  NavTitle,
-  Page,
-  Searchbar,
-  Subnavbar,
-  Tab,
-  Tabs,
-  Toolbar,
-} from 'framework7-react';
+import { List, ListItem, Navbar, NavTitle, Page, Searchbar, Subnavbar } from 'framework7-react';
 import React, { useCallback, useEffect, useState } from 'react';
+import { currency } from '@js/utils';
+import { Item } from '@constants';
 
-const SearchPage = ({ f7route }) => {
+const SearchPage = () => {
   const [value, setValue] = useState('');
   const [items, setItems] = useState([]);
 
@@ -54,7 +42,7 @@ const SearchPage = ({ f7route }) => {
         </Subnavbar>
       </Navbar>
 
-      <div className="p-3    ">
+      <div className="p-3">
         <div className="text-lg font-semibold mb-2">추천 검색어</div>{' '}
         <div className="flex flex-wrap ">
           {keywords.map((keyword, i) => {
@@ -76,14 +64,28 @@ const SearchPage = ({ f7route }) => {
       </div>
 
       <List noHairlines className="mt-0 text-sm font-thin ">
-        {items && value ? (
-          <ItemsWithSalePrice items={items} />
-        ) : (
-          <div>
-            {' '}
-            <img src={logo} alt="insomenia-logo" className="w-full h-auto opacity-20" />
-          </div>
-        )}
+        <ul>
+          {items && value ? (
+            items.map((item: Item, i) => (
+              <React.Fragment key={i}>
+                <ListItem
+                  key={item.id}
+                  mediaItem
+                  link={`/items/${item.id}`}
+                  title={`${item.name}`}
+                  subtitle={`${currency(item.sale_price)}원`}
+                  className="w-full"
+                >
+                  <img slot="media" src={API_URL + item.image_path} className="w-20 rounded" alt="" />
+                </ListItem>
+              </React.Fragment>
+            ))
+          ) : (
+            <div>
+              <img src={logo} alt="logo" className="w-full h-auto opacity-20" />
+            </div>
+          )}
+        </ul>
       </List>
     </Page>
   );

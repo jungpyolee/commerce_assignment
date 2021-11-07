@@ -1,9 +1,9 @@
-import { itemState, priceState } from '@atoms';
+import { priceState } from '@atoms';
 import { useRecoilState } from 'recoil';
 import React from 'react';
 import { currency } from '@js/utils';
 
-export const Price = () => {
+export const OrderPrice = () => {
   const [price, setPrice] = useRecoilState(priceState);
 
   return (

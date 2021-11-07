@@ -43,10 +43,10 @@ export const ItemShowPageDetailSwiper = ({ item }) => {
     <Swiper effect={'fade'} autoplay={{ delay: 750 }}>
       <SwiperSlide>
         <img className="max-h-96 w-full rounded-xl pb-2 -hue-rotate-90" src={API_URL + item.image_path} />
-      </SwiperSlide>{' '}
+      </SwiperSlide>
       <SwiperSlide>
         <img className="max-h-96 w-full rounded-xl pb-2 -hue-rotate-180" src={API_URL + item.image_path} />
-      </SwiperSlide>{' '}
+      </SwiperSlide>
       <SwiperSlide>
         <img className="max-h-96 w-full rounded-xl pb-2 -hue-rotate-270" src={API_URL + item.image_path} />
       </SwiperSlide>

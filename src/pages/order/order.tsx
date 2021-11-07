@@ -1,10 +1,10 @@
-import { AccordionContent, Block, Button, f7, Icon, Link, List, ListItem, Navbar, Page } from 'framework7-react';
-import { Order, PageRouteProps } from '@constants';
-import { API_URL, getCart, getItem, getOrder } from '@api';
+import { Navbar, Page } from 'framework7-react';
+import { PageRouteProps } from '@constants';
+import { getCart } from '@api';
 import React, { useEffect, useState } from 'react';
 import OrderForm from './OrderForm';
 
-const OrderPage = ({ f7route, f7router }: PageRouteProps) => {
+const OrderPage = ({ f7router }: PageRouteProps) => {
   const [orderId, setOrderId] = useState<number>();
 
   useEffect(() => {
